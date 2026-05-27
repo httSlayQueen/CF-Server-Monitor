@@ -16,6 +16,8 @@
 - 📱 **响应式**：支持桌面端和移动端
 - 🔄 **自动部署**：GitHub Actions 一键部署
 - 🗺️ **延迟追踪**：国内电信/联通/移动/字节延迟监测
+- 🔒 **服务器隐藏**：可设置特定服务器对非登录用户隐藏
+- ↕️ **拖拽排序**：后台拖拽调整服务器显示顺序
 
 ## 📁 项目结构
 
@@ -229,6 +231,33 @@ curl -sL https://你的项目.你的子域.workers.dev/install.sh | bash -s unin
 2. 白色终端
 3. 完全自定义 CSS
 
+### 拖拽排序
+
+在管理后台的服务器列表中，可以通过拖拽调整服务器的显示顺序：
+
+1. 进入管理后台 `/admin`
+2. 找到服务器列表最左侧的 `⋮⋮` 拖拽手柄
+3. 按住拖拽手柄上下拖动调整顺序
+4. 松开鼠标后自动保存排序
+5. 首页会按此排序显示服务器
+
+> **分组排序**：分组的顺序由该分组内第一个出现的服务器位置决定。
+
+### 服务器隐藏
+
+可以将特定服务器设置为对非登录用户隐藏：
+
+1. 进入管理后台 `/admin`
+2. 点击服务器行右侧的 **✏️ 编辑** 按钮
+3. 勾选 **Hide from Public** 选项
+4. 点击 **保存**
+
+> **隐藏效果**：
+> - 非登录状态下，首页不显示该服务器
+> - 非登录状态下，直接访问该服务器详情页返回 404
+> - 非登录状态下，所有相关 API 接口也无法访问该服务器数据
+> - 登录管理员后可正常查看所有服务器
+
 ## 🔔 离线告警配置
 
 在管理后台 → 全局设置中配置：
@@ -245,6 +274,26 @@ curl -sL https://你的项目.你的子域.workers.dev/install.sh | bash -s unin
 1. 创建群机器人，获取 Webhook URL
 2. 填入 Bot Token 字段
 3. Chat ID 留空
+
+## 📸 界面预览
+
+<img width="1903" height="1341" alt="image" src="https://github.com/user-attachments/assets/77344b37-c7ce-4bff-b820-cbd0b4b26579" />
+<img width="1907" height="683" alt="image" src="https://github.com/user-attachments/assets/48cf2f27-66d2-4b39-a5d3-ea9c5d5bb908" />
+<img width="1788" height="876" alt="image" src="https://github.com/user-attachments/assets/658e68e9-f858-408b-a603-537e55625701" />
+<img width="1788" height="1724" alt="image" src="https://github.com/user-attachments/assets/f2c1fc38-ecd9-48be-8fea-fbb5ff3aad51" />
+<img width="1788" height="1126" alt="image" src="https://github.com/user-attachments/assets/e28da6fb-915b-4417-a25c-faa7b3b11656" />
+<img width="1788" height="1480" alt="image" src="https://github.com/user-attachments/assets/4069d509-6ac9-4fa1-ade2-8eac43dbf6db" />
+<img width="1875" height="723" alt="image" src="https://github.com/user-attachments/assets/a806179f-8cb0-4713-b774-2741cb094a6f" />
+
+白色主题
+
+<img width="1788" height="1268" alt="image" src="https://github.com/user-attachments/assets/a229d14e-6099-4863-ad3d-3202fe2add58" />
+<img width="1904" height="671" alt="image" src="https://github.com/user-attachments/assets/48767b1b-f85e-48af-bd4f-cbe61c01d020" />
+<img width="1788" height="876" alt="image" src="https://github.com/user-attachments/assets/d8abbeb3-bb66-4be6-9d56-5cb42a579950" />
+<img width="1788" height="1126" alt="image" src="https://github.com/user-attachments/assets/9b4b9f4a-0e62-4ae6-87dc-e8c5a5306975" />
+<img width="1904" height="788" alt="image" src="https://github.com/user-attachments/assets/d0d53cf2-1d3d-4463-8b11-b92ca4eef8a3" />
+<img width="1903" height="705" alt="image" src="https://github.com/user-attachments/assets/acc08244-c0f1-438b-88cc-871879be09b7" />
+
 
 ## 🛠️ 本地开发
 
