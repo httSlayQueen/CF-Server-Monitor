@@ -59,19 +59,19 @@
     <div class="ping-panel">
       <div class="ping-item">
         <span class="ping-label">CT</span>
-        <span class="ping-value" :style="{ color: getPingColor(server.ping_ct) }">{{ server.ping_ct === '0' ? trans.timeout : server.ping_ct + 'ms' }}</span>
+        <span class="ping-value" :style="{ color: getPingColor(server.ping_ct) }">{{ !isPingValid(server.ping_ct) ? trans.timeout : server.ping_ct + 'ms' }}</span>
       </div>
       <div class="ping-item">
         <span class="ping-label">CU</span>
-        <span class="ping-value" :style="{ color: getPingColor(server.ping_cu) }">{{ server.ping_cu === '0' ? trans.timeout : server.ping_cu + 'ms' }}</span>
+        <span class="ping-value" :style="{ color: getPingColor(server.ping_cu) }">{{ !isPingValid(server.ping_cu) ? trans.timeout : server.ping_cu + 'ms' }}</span>
       </div>
       <div class="ping-item">
         <span class="ping-label">CM</span>
-        <span class="ping-value" :style="{ color: getPingColor(server.ping_cm) }">{{ server.ping_cm === '0' ? trans.timeout : server.ping_cm + 'ms' }}</span>
+        <span class="ping-value" :style="{ color: getPingColor(server.ping_cm) }">{{ !isPingValid(server.ping_cm) ? trans.timeout : server.ping_cm + 'ms' }}</span>
       </div>
       <div class="ping-item">
         <span class="ping-label">BD</span>
-        <span class="ping-value" :style="{ color: getPingColor(server.ping_bd) }">{{ server.ping_bd === '0' ? trans.timeout : server.ping_bd + 'ms' }}</span>
+        <span class="ping-value" :style="{ color: getPingColor(server.ping_bd) }">{{ !isPingValid(server.ping_bd) ? trans.timeout : server.ping_bd + 'ms' }}</span>
       </div>
     </div>
   </a>
@@ -129,11 +129,19 @@ const expireText = computed(() => {
   return diff > 0 ? Math.ceil(diff / (1000 * 3600 * 24)) + 'd' : '<span style="color:var(--accent-red);">EXPIRED</span>'
 })
 
+const isPingValid = (ping) => {
+  if (ping === null || ping === undefined || ping === '' || ping === '0') {
+    return false
+  }
+  const val = parseInt(ping)
+  return val > 0
+}
+
 const getPingColor = (ping) => {
-  ping = parseInt(ping) || 0
-  if (ping === 0) return 'var(--accent-red)'
-  if (ping < 100) return 'var(--accent-green)'
-  if (ping < 200) return 'var(--accent-yellow)'
+  if (!isPingValid(ping)) return 'var(--accent-red)'
+  const val = parseInt(ping)
+  if (val < 100) return 'var(--accent-green)'
+  if (val < 200) return 'var(--accent-yellow)'
   return 'var(--accent-red)'
 }
 </script>

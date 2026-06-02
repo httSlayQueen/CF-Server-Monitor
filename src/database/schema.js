@@ -207,6 +207,14 @@ export async function cleanupOldData(db) {
 export async function saveMetricsHistory(db, serverId, metrics, countryCode = '') {
   try {
     const now = Date.now();
+    
+    // 安全解析 ping 值，空值或 0 表示不可达，存储为 NULL
+    const parsePing = (val) => {
+      if (val === '' || val === null || val === undefined) return null;
+      const num = parseInt(val);
+      return (num > 0) ? num : null;
+    };
+    
     await db.prepare(`
       INSERT INTO metrics_history (
         server_id, timestamp, cpu, ram, disk, load_avg,
@@ -239,10 +247,10 @@ export async function saveMetricsHistory(db, serverId, metrics, countryCode = ''
       parseInt(metrics.processes) || 0,
       parseInt(metrics.tcp_conn) || 0,
       parseInt(metrics.udp_conn) || 0,
-      parseInt(metrics.ping_ct) || 0,
-      parseInt(metrics.ping_cu) || 0,
-      parseInt(metrics.ping_cm) || 0,
-      parseInt(metrics.ping_bd) || 0,
+      parsePing(metrics.ping_ct),
+      parsePing(metrics.ping_cu),
+      parsePing(metrics.ping_cm),
+      parsePing(metrics.ping_bd),
       parseFloat(metrics.ram_total) || 0,
       parseFloat(metrics.ram_used) || 0,
       parseFloat(metrics.swap_total) || 0,

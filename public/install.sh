@@ -136,7 +136,11 @@ get_cpu_stat() {
 get_http_ping() { 
     local rtt
     rtt=$(curl -o /dev/null -s -m 1 --connect-timeout 1 -w "%{time_total}" "http://${1:-}" 2>/dev/null | awk '{printf "%.0f", $1*1000}')
-    echo "${rtt:-0}"
+    if [ -n "$rtt" ] && [ "$rtt" -gt 0 ] 2>/dev/null; then
+        echo "$rtt"
+    else
+        echo ""
+    fi
 }
 
 get_tcp_ping() {
@@ -146,7 +150,7 @@ get_tcp_ping() {
     local timing
 
     if [ -z "${host}" ]; then
-        echo "0"
+        echo ""
         return
     fi
 
@@ -165,7 +169,7 @@ get_tcp_ping() {
         dns = a[1] + 0
         conn = a[2] + 0
         if (conn <= 0 || conn < dns) {
-            print 0
+            print ""
             exit
         }
         ms = int((conn - dns) * 1000 + 0.5)
@@ -349,10 +353,10 @@ while true; do
     # ------------------ 读取共享内存 (Rename 机制下绝对无竞态) ------------------
     [ -f /dev/shm/.cf_ipv4 ] && IPV4=$(cat /dev/shm/.cf_ipv4) || IPV4="0"
     [ -f /dev/shm/.cf_ipv6 ] && IPV6=$(cat /dev/shm/.cf_ipv6) || IPV6="0"
-    [ -f /dev/shm/.cf_ping_ct ] && PING_CT=$(cat /dev/shm/.cf_ping_ct) || PING_CT="0"
-    [ -f /dev/shm/.cf_ping_cu ] && PING_CU=$(cat /dev/shm/.cf_ping_cu) || PING_CU="0"
-    [ -f /dev/shm/.cf_ping_cm ] && PING_CM=$(cat /dev/shm/.cf_ping_cm) || PING_CM="0"
-    [ -f /dev/shm/.cf_ping_bd ] && PING_BD=$(cat /dev/shm/.cf_ping_bd) || PING_BD="0"
+    [ -f /dev/shm/.cf_ping_ct ] && PING_CT=$(cat /dev/shm/.cf_ping_ct) || PING_CT=""
+    [ -f /dev/shm/.cf_ping_cu ] && PING_CU=$(cat /dev/shm/.cf_ping_cu) || PING_CU=""
+    [ -f /dev/shm/.cf_ping_cm ] && PING_CM=$(cat /dev/shm/.cf_ping_cm) || PING_CM=""
+    [ -f /dev/shm/.cf_ping_bd ] && PING_BD=$(cat /dev/shm/.cf_ping_bd) || PING_BD=""
 
     # 安全地构建闭合规范的 JSON 数据流
     EOS=$(escape_json "${OS}")

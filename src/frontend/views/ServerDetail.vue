@@ -588,10 +588,13 @@ const updateChartDataset = (chart, datasetIndex, dataPoints, xField = 'timestamp
       sampledData = dataPoints.filter((_, i) => i % step === 0)
     }
 
-    processedData = sampledData.map(d => ({
-      x: new Date(d[xField]).getTime(),
-      y: parseFloat(d[yField]) || 0
-    }))
+    processedData = sampledData.map(d => {
+      const val = parseFloat(d[yField])
+      return {
+        x: new Date(d[xField]).getTime(),
+        y: (val > 0) ? val : null
+      }
+    })
 
     processedData.sort((a, b) => a.x - b.x)
   }
@@ -741,7 +744,7 @@ const updateAllChartTimeUnits = (hours) => {
   })
 }
 
-const appendDataToChart = (chart, datasetIndex, timestamp, value) => {
+const appendDataToChart = (chart, datasetIndex, timestamp, value, isPing = false) => {
   if (!chart) return
   
   const dataset = chart.data.datasets[datasetIndex]
@@ -751,7 +754,15 @@ const appendDataToChart = (chart, datasetIndex, timestamp, value) => {
   const endTime = Date.now()
   const startTime = endTime - currentHours.value * 60 * 60 * 1000
 
-  dataset.data.push({ x: time, y: parseFloat(value) || 0 })
+  let yVal
+  if (isPing) {
+    const val = parseFloat(value)
+    yVal = (val > 0) ? val : null
+  } else {
+    yVal = parseFloat(value) || 0
+  }
+  
+  dataset.data.push({ x: time, y: yVal })
   dataset.data = dataset.data.filter(d => d.x >= startTime)
   
   if (chart.options && chart.options.scales && chart.options.scales.x) {
@@ -780,10 +791,10 @@ const fetchCurrentStatus = async () => {
     appendDataToChart(charts.net, 1, dataTimestamp, data.net_out_speed)
     appendDataToChart(charts.conn, 0, dataTimestamp, data.tcp_conn)
     appendDataToChart(charts.conn, 1, dataTimestamp, data.udp_conn)
-    appendDataToChart(charts.ping, 0, dataTimestamp, data.ping_ct)
-    appendDataToChart(charts.ping, 1, dataTimestamp, data.ping_cu)
-    appendDataToChart(charts.ping, 2, dataTimestamp, data.ping_cm)
-    appendDataToChart(charts.ping, 3, dataTimestamp, data.ping_bd)
+    appendDataToChart(charts.ping, 0, dataTimestamp, data.ping_ct, true)
+    appendDataToChart(charts.ping, 1, dataTimestamp, data.ping_cu, true)
+    appendDataToChart(charts.ping, 2, dataTimestamp, data.ping_cm, true)
+    appendDataToChart(charts.ping, 3, dataTimestamp, data.ping_bd, true)
     // 追加负载数据
     if (charts.load) {
       const loads = parseLoadAvg(data.load_avg)
